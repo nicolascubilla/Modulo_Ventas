@@ -87,13 +87,18 @@
     <td><?php echo htmlspecialchars($merma['cantidad'], ENT_QUOTES, 'UTF-8'); ?></td>
     <td><?php echo htmlspecialchars($merma['descripcion'], ENT_QUOTES, 'UTF-8'); ?></td>
     <td><?php echo htmlspecialchars($merma['motivo'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td>
-    <button class="tailwind-btn 0 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
-  detalles
-</button>
-<button onclick="window.print()" class="btn btn-warning" data-bs-toggle="tooltip" title="Imprimir esta página">
-    <i class="bi bi-printer"></i> Imprimir
-</button>
+    <td class="text-center">
+    <a href="orden_compra_print.php?merma_id=<?php echo $merma['merma_id']; ?>" 
+                                                               class="btn btn-default btn-sm" data-title="Imprimir" rel="tooltip" target="_blank">
+                                                                <i class="glyphicon glyphicon-print"></i> Imprimir
+                                                            </a>
+                                                            <a href="orden_compra_detalles.php?merma_id=<?php echo $merma['merma_id']; ?>" 
+   class="btn btn-info btn-sm" 
+   data-title="Detalles" 
+   rel="tooltip">
+    <i class="fa fa-info-circle"></i> Detalles
+</a>
+       
 
 
 
