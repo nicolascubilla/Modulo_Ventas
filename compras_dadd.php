@@ -1,0 +1,51 @@
+<?php
+require 'clases/conexion.php';
+session_start();
+$detalle= consultas::get_datos("select*from v_detalle_pedcompra where ped_com=".$_REQUEST['vped_com'].
+        " and dep_cod=".$_REQUEST['vdep_cod']." and art_cod=".$_REQUEST['vart_cod'])?>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title"><i class="fa fa-plus"></i>Agregar Item de compras</h4>
+</div>
+<form action="compras_dcontrol.php" method="post" accept-charset="UTF-8" class="form-horizontal">
+    <div class="modal-body">
+        <input type="hidden" name="accion" value="1"/>
+        <input type="hidden" name="vcom_cod" value="<?php echo $_REQUEST['vcom_cod'] ?>"/>
+        <!--DEPOSITO-->
+        <div class="form-group">
+            <label class="control-label col-lg-2 col-sm-3 col-md-2 col-xs-2">Deposito:</label>
+            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                <input type="hidden" name="vdep_cod" class="form-control" value="<?php echo $detalle[0]['dep_cod']?>"/>
+                <input type="text" class="form-control" value="<?php echo $detalle[0]['dep_descri']?>" disabled=""/>
+            </div>
+        </div>
+        <!--ARTICULO-->
+        <div class="form-group">
+            <label class="control-label col-lg-2 col-sm-3 col-md-2 col-xs-2">Articulo:</label>
+            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                <input type="hidden" name="vart_cod" class="form-control" value="<?php echo $detalle[0]['art_cod']."_".$detalle[0]['ped_precio']?>"/>
+                <input type="text" class="form-control" value="<?php echo $detalle[0]['art_descri']."_".$detalle[0]['mar_descri']?>" disabled=""/>
+            </div>
+        </div>
+        <!--CANTIDAD-->
+        <div class="form-group">
+            <label class="control-label col-lg-2 col-sm-3 col-md-2 col-xs-2">Cantidad:</label>
+            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-6">
+                <input type="number" name="vcom_cant" class="form-control" min="1" value="<?php echo $detalle[0]['ped_cant']?>" required=""/>
+            </div>
+        </div>
+        <!--PRECIO-->
+        <div class="form-group">
+            <label class="control-label col-lg-2 col-sm-3 col-md-2 col-xs-2">Precio:</label>
+            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-6">
+                <input type="number" name="vcom_precio" class="form-control" min="1" value="<?php echo $detalle[0]['ped_precio']?>" required=""/>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="reset" data-dismiss="modal" class="btn btn-default"><i class="fa fa-close"></i>Cerrar</button>
+        <button type="submit" class="btn btn-success"><i class="fa fa-floppy"></i>Agregar</button>
+    </div>
+</form>
