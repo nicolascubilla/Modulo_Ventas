@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <?php if(!empty($_SESSION['mensaje'])){ ?>
-                            <div class="alert alert-danger" role="alert" id="mensaje">
+                            <div class="alert alert-success" role="alert" id="mensaje">
                                 <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 <?php echo $_SESSION['mensaje'];
                                 $_SESSION['mensaje'] = '';
@@ -68,7 +68,7 @@
                                             <td data-title="Cod:"><?php  echo $presupuesto['pre_cod'];?> </td>
                                              <td data-title="fecha"><?php  echo $presupuesto['fecha'];?> </td>
                                             <td data-title="cliente"><?php  echo $presupuesto['cliente'];?> </td>
-                                            <td data-title="Total"><?php  echo $presupuesto['total'];?> </td>
+                                            <td data-title="Total"><?php echo number_format($presupuesto['total'],0,",",".");?> </td>
                                               <td data-title="Estado"><?php echo ($presupuesto['estado']==="ANULADO")? "<span style='color:red';><strong>".$presupuesto['estado']."</strong></span>":$presupuesto['estado'];?></td>
                                             <td date-title="Aciones" class="text-center">
                                                                 <a href="presupuestodetall_print?vpre_cod=<?php echo $presupuesto['pre_cod'];?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip">
@@ -119,15 +119,23 @@
                                                             <td data-title="Cantidad"><?php echo $detallespre['pre_cant'];?></td>
                                                             <td data-title="Precio"><?php echo number_format($detallespre['pre_precio'],0,",",".");?></td>
                                                             <td data-title="Subtotal"><?php echo number_format($detallespre['subtotal'],0,",",".");?></td>
-                                                            <td data-title= "Acciones" class="text-center">
-                                                                <a onclick="editar(<?php echo $detallespre['pre_cod'];?>,<?php echo $detallespre['dep_cod'];?>,<?php echo $detallespre['art_cod'];?>)" class="btn btn-warning btn-md" 
-                                                                   data-title="Editar" rel="tooltip" data-toggle="modal" data-target="#editar">
-                                                                    <i class="fa fa-edit"></i>                                                                    
-                                                                </a>                                      <a onclick="borrar(<?php echo $detallespre['pre_cod'];?>,<?php echo $detallespre['dep_cod'];?>,<?php echo $detallespre['art_cod'];?>,<?php echo "'".$detallespre['art_descri']." ".$detallespre['mar_descri']."'";?>)" class="btn btn-danger btn-md" 
-                                                                   data-title="Borrar" rel="tooltip" data-toggle="modal" data-target="#borrar">
-                                                                    <i class="fa fa-trash"></i>                                                                    
-                                                                </a>                                                                                                                                
-                                                            </td>
+                                                            <td data-title="Acciones" class="text-center">
+    <!-- Botón Editar -->
+    <a onclick="editar(<?php echo $detallespre['pre_cod'];?>,<?php echo $detallespre['dep_cod'];?>,<?php echo $detallespre['art_cod'];?>)" 
+       class="btn btn-warning btn-md" data-title="Editar" rel="tooltip" 
+       data-toggle="modal" data-target="#editar"
+       <?php echo ($detallespre['id_estado'] == 3 || $detallespre['id_estado'] == 2) ? 'disabled style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
+        <i class="fa fa-edit"></i>                                                                    
+    </a>      
+    <!-- Botón Borrar -->
+    <a onclick="borrar(<?php echo $detallespre['pre_cod'];?>,<?php echo $detallespre['dep_cod'];?>,<?php echo $detallespre['art_cod'];?>,<?php echo "'".$detallespre['art_descri']." ".$detallespre['mar_descri']."'";?>)" 
+       class="btn btn-danger btn-md" data-title="Borrar" rel="tooltip" 
+       data-toggle="modal" data-target="#borrar"
+       <?php echo ($detallespre['id_estado'] == 3 || $detallespre['id_estado'] == 2) ? 'disabled style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
+        <i class="fa fa-trash"></i>                                                                    
+    </a>
+</td>
+
                                                         </tr>
                                                          <?php } ?>
                                                     </tbody>
@@ -162,7 +170,7 @@
             </select>
         </div> <!-- Cierra el div col-lg-6 -->
     </div> <!-- Cierra el div form-group -->
-</div> <!-- Cierra el div box-body -->
+
 
                                                     <div class="form-group">
                                                         <label class="control-label col-lg-2 col-sm-2 col-md-2">Articulo:</label>
@@ -190,10 +198,13 @@
                                                     </div>                                                    
                                                 </div>
                                                 <div class="box-footer">
+                                                <?php if ($detallespre['id_estado'] != 3 && $detallespre['id_estado'] != 2) { ?>
                                                     <button class="btn btn-primary pull-right" type="submit" 
                                                             data-title="Presione para guardar el item" rel="tooltip">
                                                         <i class="fa fa-floppy-o"></i> Guardar
-                                                    </button>                                                    
+                                                        
+                                                    </button>                
+                                                    <?php } ?>                                    
                                                 </div>
                                             </form>
                                         </div>

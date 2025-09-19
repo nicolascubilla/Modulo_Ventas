@@ -1,0 +1,61 @@
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 123703
+Expira: 2025-08-30 17:28:47
+
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 224255
+Expira: 2025-08-30 17:34:35
+
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-08-30 17:49:28
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 206127
+Expira: 2025-08-30 17:59:27
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-08-30 19:30:24
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 314151
+Expira: 2025-08-30 19:40:22
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-08-30 19:32:10
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 648712
+Expira: 2025-08-30 19:42:07
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-08-30 19:33:40
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 933065
+Expira: 2025-08-30 19:43:37
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-08-30 19:35:00
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 301049
+Expira: 2025-08-30 19:44:58
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+
+Fecha: 2025-09-04 01:11:22
+Para: nicolascubillasosa2001@gmail.com
+Usuario: nico
+Código: 555877
+Expira: 2025-09-04 01:21:20
+Error: SMTP Error: Could not connect to SMTP host. Connection failed. stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1408D07B:SSL routines:ssl3_get_key_exchange:bad signature
+

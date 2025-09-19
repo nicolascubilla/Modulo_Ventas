@@ -3,7 +3,7 @@ require 'clases/conexion.php';
 $control_id = $_POST['control_id']; 
 $response = [];
 if ($control_id) {
-    $detalles = consultas::get_datos("SELECT control_id, art_cod, art_descri, cantidad FROM v_listar_detalles_produccion WHERE control_id = $control_id");
+    $detalles = consultas::get_datos("SELECT control_id, art_cod, art_descri,id_etapa,nombre_etapa, cantidad FROM v_listar_detalles_produccion WHERE control_id = $control_id");
     $estados = consultas::get_datos("SELECT id_estado, nombre FROM estado WHERE id_estado IN (4,9,10) ORDER BY id_estado ASC");
     $detalle_html = '';
     if ($detalles) {
@@ -16,6 +16,10 @@ if ($control_id) {
                 <td>
                     <input type="hidden" name="vart_cod[]" value="' . htmlspecialchars($detalle['art_cod']) . '">
                     ' . htmlspecialchars($detalle['art_descri']) . '
+                </td>
+                 <td>
+                    <input type="hidden" name="vid_etapa[]" value="' . htmlspecialchars($detalle['id_etapa']) . '">
+                    ' . htmlspecialchars($detalle['nombre_etapa']) . '
                 </td>
                 <td>
                     <input type="hidden" name="vcantidad[]" value="' . htmlspecialchars($detalle['cantidad']) . '">

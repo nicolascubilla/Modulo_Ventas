@@ -124,7 +124,7 @@
                                                     <span class="estado 
                                                         <?php 
                                                             echo $cabecera['estado_nombre'] == 'FINALIZADO' ? 'estado-finalizado' : 
-                                                            ($cabecera['estado_nombre'] == 'CERRADO' ? 'estado-cerrado' : 
+                                                            ($cabecera['estado_nombre'] == 'PAGADO' ? 'estado-cerrado' : 
                                                                  ($cabecera['estado_nombre'] == 'PENDIENTE' ? 'estado-pendiente' : 'estado-anulado'));
                                                         ?>">
                                                         <?php echo $cabecera['estado_nombre']; ?>

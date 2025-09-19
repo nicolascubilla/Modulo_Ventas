@@ -1,53 +1,66 @@
 <?php
-require 'clases/conexion.php'; // Incluye la conexión
-session_start(); // Inicia o reanuda la sesión
+require 'clases/conexion.php';
+session_start();
 
 try {
-    // Función para convertir arrays a formato PostgreSQL
     function format_array($array) {
         return $array ? "'{" . implode(',', array_map('intval', $array)) . "}'" : 'NULL';
     }
 
-    // Sanitización de datos
-    $accion = intval($_POST['accion'] ?? 0);
-    $vid_concepto = intval($_POST['vid_concepto'] ?? 0);
-    $vid_factura = intval($_POST['vid_factura'] ?? 0);
-    $vdescripcion = $_POST['vdescripcion'] ?? '';
+    $accion        = intval($_POST['accion'] ?? 0);
+    $vdescripcion  = pg_escape_string($_POST['vdescripcion'] ?? '');
     $vfecha_ajuste = !empty($_POST['vfecha_ajuste']) ? "'" . $_POST['vfecha_ajuste'] . "'" : 'NULL';
-    $vusu_cod = intval($_POST['vusu_cod'] ?? 0);
+   
 
-    // Procesar arrays
-    $materiales = format_array($_POST['vmaterial_id'] ?? []);
-    $cantidades = format_array($_POST['cantidad_ajustada'] ?? []);
+    $vusu_cod     = intval($_SESSION['usu_cod'] ?? 0);
+    $vid_sucursal = intval($_SESSION['id_sucursal'] ?? 0);
 
-    // Preparar consulta
+    // Array de materiales y cantidades ajustadas
+     $vdep_cod      = intval($_POST['vdep_cod'] ?? 0);
+  // Tomar materiales tal cual
+$materiales = $_POST['materiales'] ?? [];
+
+// Tomar cantidades alineadas con los materiales
+$cantidades = [];
+foreach ($materiales as $mat) {
+    $cantidades[] = intval($_POST['encontrada'][$mat] ?? 0);
+}
+
+// Formatear para enviarlos al function
+$materiales = format_array($materiales);
+$cantidades = format_array($cantidades);
+
+    $vdep_cod = intval($_POST['vdep_cod'] ?? 0);
+
     $sql = "SELECT public.fn_ajuste_compras(
         $accion,
-        $vid_concepto,
-        $vid_factura,
         '$vdescripcion',
         $vfecha_ajuste,
         $vusu_cod,
+        $vid_sucursal,
         $materiales,
-        $cantidades
+        $cantidades,
+        $vdep_cod
     ) AS resul";
 
-    // Ejecutar consulta
+
+
     $resultado = consultas::get_datos($sql);
 
-    // Manejar resultado
-    if (!empty($resultado) && $resultado[0]['resul'] !== null) {
+    if ($resultado && isset($resultado[0]['resul'])) {
         $valor = explode("*", $resultado[0]['resul']);
         $_SESSION['mensaje'] = $valor[0];
-        header("location:ajuste_compra_index.php" . $valor[1]);
+        header("location:ajuste_compra_index.php" . (!empty($valor[1]) ? "?id=" . $valor[1] : ""));
+        exit;
     } else {
         $_SESSION['mensaje'] = "Error al procesar la solicitud.";
         header("location:ajuste_compra_index.php");
+        exit;
     }
 } catch (Exception $e) {
-    // Manejo de errores
     error_log("Error en ajuste compras: " . $e->getMessage());
     $_SESSION['mensaje'] = "Error al procesar: " . $e->getMessage();
-    header("location:ajuste_compra_index.php");
+    header("location:ajuste_compras_index.php");
+    exit;
 }
 ?>

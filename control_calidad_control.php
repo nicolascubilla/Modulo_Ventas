@@ -17,12 +17,14 @@ $vresponsable_inspeccion = isset($_POST['vresponsable_inspeccion']) ? intval($_P
 
 // Validación y conversión de arrays
 $vart_cod = isset($_POST['vart_cod']) ? $_POST['vart_cod'] : [];
+$vid_etapa = isset($_POST['vid_etapa']) ? $_POST['vid_etapa'] : [];
 $vcantidad = isset($_POST['vcantidad']) ? $_POST['vcantidad'] : [];
 $id_estado = isset($_POST['id_estado']) ? $_POST['id_estado'] : [];
 $vcantidad_rechazada = isset($_POST['vcantidad_rechazada']) ? $_POST['vcantidad_rechazada'] : [];
 $vcantidad_critica = isset($_POST['vcantidad_critica']) ? $_POST['vcantidad_critica'] : [];
 
 $vart_cod = !empty($vart_cod) ? "ARRAY[" . implode(',', array_map('intval', $vart_cod)) . "]" : "NULL";
+$vid_etapa = !empty($vid_etapa) ? "ARRAY[" . implode(',', array_map('intval', $vid_etapa)) . "]" : "NULL";
 $vcantidad = !empty($vcantidad) ? "ARRAY[" . implode(',', array_map('intval', $vcantidad)) . "]" : "NULL";
 $id_estado = !empty($id_estado) ? "ARRAY[" . implode(',', array_map('intval', $id_estado)) . "]" : "NULL";
 $vcantidad_rechazada = !empty($vcantidad_rechazada) ? "ARRAY[" . implode(',', array_map('intval', $vcantidad_rechazada)) . "]" : "NULL";
@@ -33,7 +35,8 @@ if ($vcontrol_id !== 'NULL' && $vfecha_inspeccion !== 'NULL' && $vid_resultado !
     $sql = "SELECT fn_control_calidad(
               $accion, $vcontrol_id, $vfecha_inspeccion, $vid_resultado, $vobservacion, 
               $vaprobado, $vresponsable_inspeccion, 
-              $vart_cod, $vcantidad, $id_estado, $vcantidad_rechazada, $vcantidad_critica
+              $vart_cod, $vid_etapa,
+               $vcantidad, $id_estado, $vcantidad_rechazada, $vcantidad_critica
             ) as resul";
 
     $resultado = consultas::get_datos($sql);

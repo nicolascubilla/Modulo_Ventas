@@ -2,18 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pedidos de Materia Prima</title>
+    
     <link rel="shortcut icon" href="/lp3/favicon.ico" type="image/x-icon">
-    
-   
-    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
     <?php 
     session_start();
     require 'menu/css_lte.ctp'; 
     ?>
-    
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
+    <style>
+        .estado-finalizado {
+            background-color: #28a745; /* Verde */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .estado-pendiente {
+            background-color: #ffc107; /* Amarillo */
+            color: black;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .estado-anulado {
+            background-color: #dc3545; /* Rojo */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -23,14 +50,11 @@
         <div class="content-wrapper">
             <div class="content">
                 <div class="box box-primary">
-                    <!-- Mensaje de Error -->
+                    <!-- Mensaje de éxito -->
                     <?php if (!empty($_SESSION['mensaje'])) : ?>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-success" role="alert">
                             <span class="glyphicon glyphicon-exclamation-sign"></span>
-                            <?php
-                            echo $_SESSION['mensaje'];
-                            $_SESSION['mensaje'] = '';
-                            ?>
+                            <?php echo $_SESSION['mensaje']; $_SESSION['mensaje'] = ''; ?>
                         </div>
                     <?php endif; ?>
 
@@ -42,9 +66,12 @@
                             </a>
                         </div>
                     </div>
+                    <?php
+                                $control = consultas::get_datos("SELECT * FROM v_pedido_materia_cabecera");
+                                if (!empty($control))  ?>
 
-                    <div class="box-body">
-                        <table id="example" class="display nowrap" style="width:100%">
+                    <div class="table-responsive">
+                        <table id="pedidoTable" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>N° Pedido</th>
@@ -58,37 +85,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                $control = consultas::get_datos("SELECT * FROM v_pedido_materia_cabecera");
-                                if (!empty($control)) {
+                                <?php if (!empty($control)) {
                                     foreach ($control as $con) { ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($con['pedido_id']); ?></td>
                                             <td><?php echo htmlspecialchars($con['ord_cod']); ?></td>
                                             <td><?php echo htmlspecialchars($con['nombre_equipo']); ?></td>
                                             <td><?php echo htmlspecialchars($con['fecha']); ?></td>
-                                            <td><?php echo htmlspecialchars($con['estado']); ?></td>
+                                            <td class="text-center">
+                                                <span class="estado <?php echo ($con['estado'] == 'FINALIZADO' ? 'estado-finalizado' : ($con['estado'] == 'PENDIENTE' ? 'estado-pendiente' : ($con['estado'] == 'ANULADO' ? 'estado-anulado' : ''))); ?>">
+                                                    <?php echo $con['estado']; ?>
+                                                </span>
+                                            </td>
                                             <td><?php echo htmlspecialchars($con['sucursal']); ?></td>
                                             <td><?php echo htmlspecialchars($con['usuario']); ?></td>
-                                            <td>
-                                            <a href="presupuesto_compra_print.php?vpedido_id=<?php echo $con['pedido_id']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
-                <span class="glyphicon glyphicon-print"></span>
-                            </a>
-                            <a href="pedido_materia_prima_detalle.php?vpedido_id=<?php echo $con['pedido_id']; ?>" 
-    class="btn btn-primary btn-sm" data-title="Ver Detalles" rel="tooltip" target="_top">
-    <i class="fa fa-eye"></i> Ver
-</a>
-<a onclick="anular(<?php echo "'".$con['pedido_id']."_".$con['pedido_id']."'"; ?>)" class="btn btn-danger btn-sm" role="button" data-title="Anular" rel="tooltip" data-placement="top" data-toggle="modal" data-target="#anular">
-                                                            <span class="glyphicon glyphicon-remove"></span>
-                                                        </a>
-                                               
+                                            <td class="text-center">
+                                                <a href="pedidos_materia_prima_print.php?vpedido_id=<?php echo $con['pedido_id']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                                                    <span class="glyphicon glyphicon-print"></span>
+                                                </a>
+                                                <a href="pedido_materia_prima_detalle.php?vpedido_id=<?php echo $con['pedido_id']; ?>" class="btn btn-primary btn-sm" data-title="Ver Detalles" rel="tooltip">
+                                                    <i class="fa fa-eye"></i> Ver
+                                                </a>
+                                                <?php if ($con['estado'] !== 'ANULADO' && $con['estado'] !== 'FINALIZADO' ) { ?>
+                                                    <button onclick="anular('<?php echo $con['ord_cod']; ?>')" class="btn btn-danger btn-sm" data-title="Anular" rel="tooltip" data-toggle="modal" data-target="#anular">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                <?php } ?>
                                             </td>
                                         </tr>
-                                    <?php } 
-                                } else { ?>
-                                    <tr>
-                                        <td colspan="8" class="text-center">No se han registrado pedidos de materia prima.</td>
-                                    </tr>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <div class="alert alert-info flat">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        No se han registrado pedidos de materia prima.
+                                    </div>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -96,6 +126,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Modal para anular -->
         <div class="modal fade" id="anular" tabindex="-1" role="dialog">
             <div class="modal-dialog">
@@ -108,58 +139,43 @@
                         <div id="confirmacion" class="alert alert-danger"></div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-default" data-dismiss="modal"><i class="fa fa-remove"></i> NO</button>
-                        <a id="si" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i> SI</a>
+                        <form id="formAnular" method="POST" action="pedido_materia_prima_anular_control.php">
+                            <input type="hidden" name="vord_cod" id="pedidoId">
+                            <input type="hidden" name="accion" value="2">
+                            <button class="btn btn-default" data-dismiss="modal"><i class="fa fa-remove"></i> NO</button>
+                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i> SI</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
 
         <?php require 'menu/footer_lte.ctp'; ?>
+        <?php require 'menu/js_lte.ctp'; ?>
     </div>
 
-    <?php require 'menu/js_lte.ctp'; ?>
-    
-      <!-- DataTables JS -->
-      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
     <script>
-        // Inicializar DataTables
-        $(document).ready(function() {
-            $('#example').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Exportar a Excel',
-                        className: 'btn btn-success btn-sm'
-                    }
-                ],
+        $(document).ready(function () {
+            $('#pedidoTable').DataTable({
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
                 }
             });
-        });
-  // Ocultar mensaje después de 4 segundos
-  $("#mensaje").delay(4000).slideUp(200, function () {
-                $(this).alert('close');
-            });
-        
-        // Función para anular un pedido
-        function anularPedido(pedidoId) {
-            if (confirm('¿Está seguro de anular este pedido?')) {
-                // Lógica de anulación (AJAX o redirección)
-                alert('Pedido ' + pedidoId + ' anulado.');
-            }
-        }
 
-      
-        function anular(datos) {
-            var dat = datos.split("_");
-            $("#si").attr('href', 'presupuesto_compra_anular.php?vpedido_id=' + dat[0] + '&accion=2');
+            setTimeout(() => {
+                $(".alert-success").slideUp(200);
+            }, 6000);
+        });
+
+        function anular(pedidoId) {
+            $("#pedidoId").val(pedidoId);
             $("#confirmacion").html(`
                 <span class='glyphicon glyphicon-warning-sign'></span> 
-                Desea anular el Pedido de Materia Prima N° <strong>${dat[0]}</strong>?
+                ¿Desea anular el Pedido de Materia Prima N° <strong>${pedidoId}</strong>?
             `);
         }
     </script>

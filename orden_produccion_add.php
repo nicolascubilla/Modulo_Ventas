@@ -76,7 +76,7 @@
             </select>
         </div>
 
-        <div class="col-lg-6 mb-3">
+        <div class="col-lg-5 mb-3">
             <label for="buscar_presupuesto" class="control-label">Buscar presupuesto (ID):</label>
             <div class="input-group">
                 <input type="text" id="buscar_presupuesto" class="form-control" placeholder="Ingrese ID" autocomplete="off">
@@ -99,7 +99,7 @@
             <input type="hidden" name="vfecha" value="<?php echo $fecha[0]['fecha']; ?>">
         </div>
 
-        <div class="col-lg-6 mb-3">
+        <div class="col-lg-5 mb-3">
             <label for="selectEquipo" class="control-label">Seleccionar equipo:</label>
             <?php $equipos = consultas::get_datos("SELECT * FROM equipo_trabajo"); ?>
             <select class="form-control select2 custom-select" id="selectEquipo" name="vequipo_id" required>
@@ -118,7 +118,7 @@
             <input type="hidden" name="vid_sucursal" value="<?php echo $_SESSION['id_sucursal']; ?>">
         </div>
 
-        <div class="col-lg-6 mb-3">
+        <div class="col-lg-5 mb-3">
             <label for="vusuario" class="control-label">Usuario:</label>
             <input type="text" id="vusuario" name="vusuario_visible" class="form-control" value="<?php echo $_SESSION['usu_nick']; ?>" readonly>
             <input type="hidden" name="vusu_cod" value="<?php echo $_SESSION['usu_cod']; ?>">

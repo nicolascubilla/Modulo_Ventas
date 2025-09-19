@@ -21,7 +21,7 @@ $pdf->SetMargins(15, 15, 15);
 $pdf->SetAutoPageBreak(TRUE, 20);
 $pdf->SetFont('times', '', 11);
 $pdf->AddPage('P', 'A4');
-$logo_path = 'C:/wamp/www/lp3/img/carpin_la_familyfull.jpg';
+$logo_path = 'C:/wamp64/www/lp3/img/carpin_la_familyfull.jpg';
 
 // Logo
 if (file_exists($logo_path)) {
@@ -63,6 +63,7 @@ if (!empty($cabeceras)) {
     $pdf->Ln(5);
 
     // Detalles de la factura
+    $vid_factura = $_REQUEST['vid_factura'];
     $detalles = consultas::get_datos("SELECT * FROM v_factura_compra_cabecera_detalle WHERE id_factura = $vid_factura");
 
     if (!empty($detalles)) {

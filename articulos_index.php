@@ -94,7 +94,7 @@
                                                             <td data-title='Codigo'> <?php echo $articulo['art_cod']?> </td>
                                                             <td data-title='Cod. barra'> <?php echo $articulo['art_codbarra']?> </td>
                                                             <td data-title='Articulo'> <?php echo $articulo['art_descri']." ".$articulo['mar_descri']?> </td>
-                                                            <td data-title='Precioc'> <?php echo $articulo['art_precioc']?> </td>
+                                                            <td data-title='Precioc'> <?php echo number_format($articulo['art_precioc'])?> </td>
                                                             <td data-title='Articulo'> <?php echo $articulo['art_preciov']?> </td>
                                                             <td data-title='Articulo'> <?php echo $articulo['tipo_descri']?> </td>
                                                             <td data-title='acciones'class="text-center">

@@ -1,113 +1,108 @@
 <?php
-
 include_once './tcpdf/tcpdf.php';
 include_once 'clases/conexion.php';
 
-// Extend the TCPDF class to create custom Footer
+// Extend TCPDF to create custom Header and Footer
 class MYPDF extends TCPDF {
     // Page footer
     public function Footer() {
-        // Position at 15 mm from bottom
         $this->SetY(-15);
-        // Set font
         $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->Cell(0, 0, 'Pag. ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, '', 'T');  
+        $this->Ln(2);
+        $this->Cell(90, 6, 'Autor: Nicolas Cubilla', 0, 0, 'L');
+        $this->Cell(90, 6, 'Página ' . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), 0, 0, 'R');
     }
 }
 
 // Create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// Set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Nicolas Cubilla');
-$pdf->SetTitle('REPORTE DE CONTROL DE AVANCES');
-$pdf->SetSubject('Reporte de Producción');
-$pdf->SetKeywords('TCPDF, PDF, reporte, producción');
+$pdf->SetTitle('REPORTE DE AVANCE PRODUCCIÓN');
+$pdf->SetSubject('Reporte Control De Producción');
+$pdf->SetKeywords('TCPDF, PDF, report, production');
 $pdf->setPrintHeader(false);
+$pdf->SetMargins(25, 20, 20);
+$pdf->SetAutoPageBreak(TRUE, 20);
 
-// Set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// Add a page
+// Add page
 $pdf->AddPage('P', 'LEGAL');
 $pdf->SetFont('times', 'B', 20);
-$pdf->Cell(0, 0, "REPORTE DE AVANCES DE PRODUCCIÓN", 0, 1, 'C');
-$pdf->Ln();
+$logo_path = 'C:/wamp/www/lp3/img/carpin_la_familyfull.jpg';
 
-// Query based on request parameters
-$filters = [];
-if (!empty($_REQUEST['opcion'])) {
-    switch ($_REQUEST['opcion']) {
-        case 1: // Fecha
-            $filters[] = "fecha_avance::date BETWEEN '" . $_REQUEST['vfecha_inicio'] . "' AND '" . $_REQUEST['vfecha_fin'] . "'";
-            break;
-        case 2: // Proveedor
-            $filters[] = "prv_cod IN (" . $_REQUEST['vproveedor'] . ")";
-            break;
-        case 3: // Artículo
-            $filters[] = "art_cod IN (" . $_REQUEST['varticulo'] . ")";
-            break;
-        case 4: // Empleado
-            $filters[] = "emp_cod IN (" . $_REQUEST['vempleado'] . ")";
-            break;
-        default:
-            $filters[] = "1=1"; // No filters
-            break;
-    }
+if (file_exists($logo_path)) {
+    $pdf->Image($logo_path, 15, 10, 25, 0, '', '', 'T', false, 100);
+    $pdf->Ln(15);
 } else {
-    $filters[] = "ord_cod = " . $_REQUEST['vord_cod'];
+    $pdf->Cell(0, 10, 'Logo no encontrado.', 0, 1, 'C');
 }
 
-$filterString = implode(' AND ', $filters);
-$cabeceras = consultas::get_datos("SELECT * FROM v_control_produccion_detalle WHERE $filterString");
+$pdf->Cell(0, 0, "REPORTE AVANCE DE PRODUCCIÓN", 0, 1, 'C');
+$pdf->Ln(10);
 
+$control_id = $_REQUEST['vcontrol_id'];
+$cabeceras = consultas::get_datos("SELECT * FROM v_control_produccion_cabe WHERE control_id = $control_id");
 $pdf->SetFont('times', '', 11);
 
 if (!empty($cabeceras)) {
-    foreach ($cabeceras as $cabecera) {
-        $pdf->Cell(120, 5, "CÓDIGO DE ORDEN: " . $cabecera['ord_cod'], 0, 1, 'L');
-        $pdf->Cell(80, 5, "FECHA AVANCE: " . $cabecera['fecha_avance'], 0, 1, 'L');
-        $pdf->Cell(80, 5, "ESTADO: " . $cabecera['ord_estado'], 0, 1, 'L');
-        $pdf->Cell(130, 5, "PROGRESO: " . $cabecera['progreso'] . "%", 0, 0, 'L');
-        $pdf->Cell(80, 5, "TIEMPO INVERTIDO: " . $cabecera['tiempo_invertido'] . " horas", 0, 1, 'L');
-        $pdf->Cell(130, 5, "COMENTARIOS: " . $cabecera['comentarios'], 0, 1, 'L');
-        $pdf->Ln();
+    $cabecera = $cabeceras[0];
+    $pdf->Cell(90, 6, "USUARIO: " . $cabecera['usu_nick'], 0, 0, 'L');
+    $pdf->Cell(77, 6, "FECHA: " . $cabecera['fecha_avance'], 0, 1, 'R');
+    
+    $pdf->Cell(90, 6, "SUCURSAL: " . $cabecera['suc_descri'], 0, 0, 'L');
+    $pdf->SetTextColor($cabecera['estado'] === 'ANULADO' ? 240 : 0, 0, 0);
+    $pdf->Cell(77, 6, "ESTADO: " . $cabecera['estado'], 0, 1, 'R');
+    $pdf->SetTextColor(0, 0, 0);
+    
+    $pdf->Ln(4);
+    $pdf->Cell(16, 6, "Progreso:", 0, 0, 'L');
+    $pdf->Cell(125, 5, $cabecera['progreso'], 0, 1, 'L');
+    
+    $pdf->Cell(30, 6, "Tiempo Invertido:", 0, 0, 'L');
+$pdf->SetFont('', 'B'); // Poner en negrita
+$pdf->Cell(135, 6, $cabecera['tiempo_invertido'] . " HS", 0, 1, 'L');
+$pdf->SetFont('', ''); // Restaurar fuente normal
 
-        // Table Header
+    
+    $pdf->Cell(22, 6, "Comentarios:", 0, 0, 'L');
+    $pdf->MultiCell(135, 6, $cabecera['comentarios'], 0, 'L');
+    
+    $pdf->SetFont('times', 'B', 15); // Negrita para el título
+    $pdf->Ln(3);
+    $pdf->Cell(80, 6, "Detalles De La Producción", 0, 1, 'L');
+    
+    $pdf->SetFont('times', '', 12); // Fuente normal para el Control ID
+    $pdf->Cell(80, 6, "Control ID N°: " . $control_id, 0, 1, 'L');
+    $pdf->Ln(5);
+    
+    
+    $detalles = consultas::get_datos("SELECT * FROM v_control_produccion_detalle WHERE control_id = $control_id");
+    if (!empty($detalles)) {
+        $pdf->SetFont('', 'B', 10);
         $pdf->SetFillColor(180, 180, 180);
-        $pdf->SetFont('', 'B', 12);
-
-        // Production Details
-        $detalles = consultas::get_datos("SELECT control_id, ord_cod, fecha_avance, progreso, tiempo_invertido, comentarios FROM v_control_produccion_detalle WHERE ord_cod=" . $cabecera['ord_cod']);
-        if (!empty($detalles)) {
-            $pdf->Cell(20, 7, 'CÓDIGO', 1, 0, 'C', 1);
-            $pdf->Cell(30, 7, 'N° ORDEN', 1, 0, 'C', 1);
-            $pdf->Cell(40, 7, 'FECHA AVANCE', 1, 0, 'C', 1);
-            $pdf->Cell(60, 7, 'PROGRESO (%)', 1, 0, 'C', 1);
-            $pdf->Cell(40, 7, 'TIEMPO(H)', 1, 1, 'C', 1);
-
-            $pdf->SetFont('', '', 11);
-            foreach ($detalles as $det) {
-                $pdf->Cell(20, 6, $det['control_id'], 1, 0, 'C');
-                $pdf->Cell(30, 6, $det['ord_cod'], 1, 0, 'C');
-                $pdf->Cell(40, 6, $det['fecha_avance'], 1, 0, 'C');
-                $pdf->MultiCell(60, 6, $det['progreso'], 1, 'C', 0, 0, '', '', true, 0, false, true, 6, 'M');
-                $pdf->Cell(40, 6, number_format($det['tiempo_invertido'], 2), 1, 1, 'C');
-            }
-            $pdf->Ln();
-        } else {
-            $pdf->Cell(0, 10, "No se encontraron detalles de la producción", 0, 1, 'L');
-            $pdf->Ln();
+        $pdf->Cell(20, 8, 'CANTIDAD', 1, 0, 'C', 1);
+        $pdf->Cell(50, 8, 'ARTÍCULO', 1, 0, 'C', 1);
+        $pdf->Cell(60, 8, 'ETAPAS PRODUCCIÓN', 1, 0, 'C', 1);
+        $pdf->Cell(35, 8, 'ESTADO', 1, 1, 'C', 1);
+        
+        
+        $pdf->SetFont('', '', 11);
+        $pdf->SetFillColor(255, 255, 255);
+        
+        foreach ($detalles as $detalle) {
+            $pdf->Cell(20, 6, $detalle['cantidad'], 1, 0, 'C', 1);
+            $pdf->Cell(50, 6, $detalle['descripcion_articulo'], 1, 0, 'C', 1);
+            $pdf->Cell(60, 6, $detalle['nombre_etapa'], 1, 0, 'C', 1);
+            $pdf->Cell(35, 6, $detalle['estado'], 1, 1, 'C', 1);
+            
         }
+    } else {
+        $pdf->Cell(0, 5, "No hay detalles disponibles para este reporte.", 0, 1, 'C');
     }
 } else {
-    $pdf->Cell(0, 10, "No se encontraron registros", 0, 1, 'L');
+    $pdf->Cell(0, 5, "No se encontró el reporte.", 0, 1, 'C');
 }
 
-// Output to browser
-$pdf->Output('reporte_control_produccion.pdf', 'I');
-
+$pdf->Output('control_produccion_print.pdf', 'I');
 ?>

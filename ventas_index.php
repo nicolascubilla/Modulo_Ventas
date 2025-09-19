@@ -1,208 +1,280 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-        <title>LP3</title>
-        <!-- Tell the browser to be responsive to screen width -->
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<html lang="es">
 
-        <?php 
-        session_start();/*Reanudar sesion*/
-        require 'menu/css_lte.ctp'; ?><!--ARCHIVOS CSS-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Módulo de Ventas</title>
 
-    </head>
-    <body class="hold-transition skin-blue sidebar-mini">
-        <div class="wrapper">
-            <?php require 'menu/header_lte.ctp'; ?><!--CABECERA PRINCIPAL-->
-            <?php require 'menu/toolbar_lte.ctp';?><!--MENU PRINCIPAL-->
-            <div class="content-wrapper">
-                <!-- AQUI VA EL CONTENIDO DE MARCA -->
-                <div class="content">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <?php if(!empty($_SESSION['mensaje'])){ ?>
-                            <div class="alert alert-danger" role="alert" id="mensaje">
-                                <span class="glyphicon glyphicon-exclamation-sign"></span>
-                                <?php echo $_SESSION['mensaje'];
-                                $_SESSION['mensaje'] = '';
-                                ?>
-                            </div>
-                            <?php } ?>
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <i class="fa fa-money"></i>
-                                    <h3 class="box-title">Ventas</h3>
-                                    <div class="box-tools">
-                                        <a href="ventas_add.php" class="btn btn-primary btn-md" 
-                                           data-title="Agregar" rel="tooltip"> 
-                                            <i class="fa fa-plus"></i> </a>                                          
-                                    </div>
+    <link rel="shortcut icon" type="image/x-icon" href="/taller/favicon.ico">
+
+    <!-- CSS personalizado -->
+    <style>
+    .estado-pendiente {
+        background-color: #f39c12;
+        color: white;
+        font-weight: bold;
+        border-radius: 12px;
+        padding: 5px 15px;
+        text-transform: uppercase;
+        display: inline-block;
+    width: 80%;
+    text-align: center;
+    
+    }
+
+    .estado-finalizado {
+        background-color: #27ae60;
+        color: white;
+        font-weight: bold;
+        border-radius: 12px;
+        padding: 5px 15px;
+        text-transform: uppercase;
+        display: inline-block;
+    width: 80%;
+    text-align: center;
+    }
+
+    .estado-anulado {
+        background-color: #ff0000;
+        color: white;
+        font-weight: bold;
+        border-radius: 12px;
+        padding: 5px 15px;
+        text-transform: uppercase;
+       display: inline-block;
+    width: 80%;
+    text-align: center;
+    }
+
+    .text-truncate {
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+       
+    }
+    </style>
+
+    <!-- CSS de DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
+    <?php require 'menu/css_lte.ctp'; ?>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <!-- Cabecera y barra de herramientas -->
+        <?php require 'menu/header_lte.ctp'; ?>
+        <?php require 'menu/toolbar_lte.ctp'; ?>
+
+        <!-- Contenido principal -->
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-xs-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-cash" viewBox="0 0 16 16">
+                                        <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                                        <path
+                                            d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2H3z" />
+                                    </svg> Módulo de Ventas
+                                </h3>
+                                <div class="box-tools">
+                                    <a href="ventas_add.php" class="btn btn-primary btn-sm pull-right"
+                                        data-title="Agregar" rel="tooltip" data-placement="top">
+                                        <i class="fa fa-plus"></i> Nueva Venta
+                                    </a>
                                 </div>
-                                <div class="box-body">
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <form action="ventas_index.php" method="post" accept-charset="UTF-8" class="form-horizontal">
-                                                <div class="box-body">
-                                                    <div class="form-group">
-                                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                                            <div class="input-group custom-search-form">
-                                                                <input type="search" name="buscar" class="form-control" autofocus=""
-                                                                       placeholder="Ingrese descripción a buscar"/>
-                                                                <span class="input-group-btn">
-                                                                    <button type="submit" class="btn btn-primary" 
-                                                                            data-title="Presione para buscar" rel="tooltip">
-                                                                        <i class="fa fa-search"></i>
-                                                                    </button>
-                                                                </span>                                                                
-                                                            </div>                                        
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>                                            
-                                            <?php 
-                                            $ventas = consultas::get_datos("select * from v_ventas where ven_fecha::date=current_date and id_sucursal = ".$_SESSION['id_sucursal']." order by ven_cod desc");
-                                            //var_dump($marcas);
-                                            if(!empty($ventas)){ ?>
-                                            
-                                                <table class="table table-striped table-condensed table-hover dt-responsive">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Fecha</th>
-                                                            <th>Cliente</th>
-                                                            <th>Condición</th>
-                                                            <th>Total</th>
-                                                            <th>Estado</th>
-                                                            <th class="text-center">Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php foreach ($ventas as $venta) { ?>                                                               
-                                                        <tr>
-                                                            <td data-title="#"><?php echo $venta['ven_cod'];?></td>
-                                                            <td data-title="Fecha"><?php echo $venta['ven_fecha'];?></td>
-                                                            <td data-title="Cliente"><?php echo $venta['cliente'];?></td>
-                                                            <td data-title="Condición"><?php echo $venta['tipo_venta'];?></td>
-                                                            <td data-title="Total"><?php echo number_format($venta['ven_total'],0,",",".");?></td>
-                                                            <td data-title="Estado"><?php echo ($venta['ven_estado']==="ANULADO")? "<span style='color:red';><strong>".$venta['ven_estado']."</strong></span>":$venta['ven_estado'];?></td>
-                                                            <td data-title= "Acciones" class="text-center">
-                                                                <?php if($venta['ven_estado']=="PENDIENTE"){ ?>
-                                                                <a onclick="confirmar(<?php echo "'".$venta['ven_cod']."_".$venta['cliente']."'";?>)" class="btn btn-success btn-md" 
-                                                                   data-title="Confirmar" rel="tooltip" data-toggle="modal" data-target="#confirmar">
-                                                                    <i class="fa fa-check"></i>
-                                                                </a>
-                                                                <a href="ventas_det.php?vven_cod=<?php echo $venta['ven_cod'];?>" class="btn btn-primary btn-md" data-title="Detalles" rel="tooltip">
-                                                                    <i class="fa fa-list"></i>                                                                    
-                                                                </a> 
-                                                                <?php } ?>
-                                                                <?php if($venta['ven_estado']=="PENDIENTE" || $venta['ven_estado']=="CONFIRMADO"){ ?>
-                                                                <a onclick="anular(<?php echo "'".$venta['ven_cod']."_".$venta['cliente']."'"?>)" class="btn btn-danger btn-md" 
-                                                                   data-title="Anular" rel="tooltip" data-toggle = "modal" data-target="#anular">
-                                                                    <i class="fa fa-remove"></i></a>
-   
-                                                                <?php } ?>
-                                                                <a href="ventas_print?vven_cod=<?php echo $venta['ven_cod'];?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
-                                                                    <i class="fa fa-print"></i>                                                                    
-                                                                </a>                                                                
-                                                            </td>
-                                                        </tr>
-                                                         <?php } ?>
-                                                    </tbody>
-                                                </table>
-                   
-                                            <?php }else { ?>
-                                            <div class="alert alert-info">
-                                                <span class="glyphicon glyphicon-info-sign"></span>
-                                                No se han registrado ventas...
-                                            </div>
+                            </div>
+
+                            <div class="box-body">
+                                <!-- Mensaje de alerta -->
+                                <?php if (!empty($_SESSION['mensaje'])) { ?>
+                                <div class="alert alert-success" role="alert" id="mensaje">
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i>
+                                    <?php 
+                                        echo $_SESSION['mensaje'];
+                                        $_SESSION['mensaje'] = ''; 
+                                        ?>
+                                </div>
+                                <?php } ?>
+
+                                <!-- Tabla de ventas -->
+                                <?php
+                                //require_once 'config/consultas.php';
+                                $ventas = Consultas::get_datos("SELECT * FROM v_ventas ORDER BY ven_fecha DESC");
+                                
+                                if (!empty($ventas)) { ?>
+                                <div class="table-responsive">
+                                    <table id="ventasTable" class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">N°</th>
+                                                <th class="text-center">Comprobante</th>
+                                                <th class="text-center">Fecha</th>
+                                                <th class="text-center">Cliente</th>
+                                                <th class="text-center">Tipo</th>
+                                                <th class="text-center">Condición</th>
+                                                <th class="text-center">Estado</th>
+                                                <th class="text-center">Vendedor</th>
+                                                <th class="text-center">Sucursal</th>
+                                                <th class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($ventas as $venta) { 
+                                                    // Determinar clase de estado basado en id_estado
+                                                    $estadoClass = '';
+                                                    $estadoTexto = '';
+                                                    switch($venta['id_estado']) {
+                                                        case 1: // Pendiente
+                                                            $estadoClass = 'estado-pendiente';
+                                                            $estadoTexto = 'PENDIENTE';
+                                                            break;
+                                                        case 2: // Finalizado
+                                                            $estadoClass = 'estado-finalizado';
+                                                            $estadoTexto = 'FINALIZADA';
+                                                            break;
+                                                        case 3: // Anulado
+                                                            $estadoClass = 'estado-anulado';
+                                                            $estadoTexto = 'ANULADA';
+                                                            break;
+                                                        default:
+                                                            $estadoClass = '';
+                                                            $estadoTexto = $venta['id_estado'];
+                                                    }
+                                                ?>
+                                            <tr>
+
+                                                <td class="text-center"><?php echo $venta['ven_cod']; ?></td>
+                                                <td class="text-center"><?php echo $venta['nro_comprobante']; ?></td>
+                                                <td class="text-center">
+                                                    <?php echo date('d/m/Y', strtotime($venta['ven_fecha'])); ?></td>
+                                                <td class="text-truncate" title="<?php echo $venta['cliente']; ?>">
+                                                    <?php echo $venta['cliente']; ?>
+                                                </td>
+                                                <td class="text-center"><?php echo $venta['tipo_comprobante']; ?></td>
+                                                <td class="text-center"><?php echo $venta['condicion_pago']; ?></td>
+                                                <td class="<?php echo $estadoClass; ?>">
+                                                    <?php echo $estadoTexto; ?>
+                                                </td>
+                                                <td class="text-truncate" title="<?php echo $venta['empleado']; ?>">
+                                                    <?php echo $venta['empleado']; ?>
+                                                </td>
+                                                <td class="text-center"><?php echo $venta['suc_descri']; ?></td>
+                                                <td class="text-center">
+                                                    <a href="venta_ver.php?id=<?php echo $venta['ven_cod']; ?>"
+                                                        class="btn btn-primary btn-sm" data-title="Ver" rel="tooltip">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+
+                                                    <a href="venta_imprimir.php?id=<?php echo $venta['ven_cod']; ?>"
+                                                        class="btn btn-default btn-sm" data-title="Imprimir"
+                                                        rel="tooltip" target="_blank">
+                                                        <i class="fa fa-print"></i>
+                                                    </a>
+
+                                                    <?php if ($venta['id_estado'] != 3) { // Si no está anulada ?>
+                                                    <a onclick="anular(<?php echo $venta['ven_cod']; ?>)"
+                                                        class="btn btn-danger btn-sm" data-title="Anular" rel="tooltip">
+                                                        <i class="fa fa-ban"></i>
+                                                    </a>
+
+                                                    <?php if ($venta['id_estado'] == 1) { // Solo pendientes se pueden editar ?>
+                                                    <a href="venta_editar.php?id=<?php echo $venta['ven_cod']; ?>"
+                                                        class="btn btn-warning btn-sm" data-title="Editar"
+                                                        rel="tooltip">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <?php } ?>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
                                             <?php } ?>
-                                        </div>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
+                                <?php } else { ?>
+                                <div class="alert alert-info">
+                                    <i class="glyphicon glyphicon-info-sign"></i>
+                                    No se han registrado ventas.
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-                  <?php require 'menu/footer_lte.ctp'; ?><!--ARCHIVOS JS--> 
-            <!-- Inicio Modal Confirmar-->
-            <div class="modal fade" id="confirmar" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
-                            <h4 class="modal-title custom-align"> <strong>Atención!!!</strong></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert alert-success" id="confirmacionc">
+        </div>
 
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a id="sic" role="buttom" class="btn btn-primary">
-                                <i class="fa fa-check"></i> Si
-                            </a>
-                            <button type="reset" data-dismiss="modal" class="btn btn-default" 
-                                    data-title="Cancelar" rel="tooltip">
-                                <i class="fa fa-close"></i> No
-                            </button>
-                        </div>
+        <!-- Modal para anular -->
+        <div class="modal fade" id="anular" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal" aria-label="Cerrar"><i
+                                class="fa fa-remove"></i></button>
+                        <h4 class="modal-title">Atención!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="confirmacion" class="alert alert-danger"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" data-dismiss="modal"><i class="fa fa-remove"></i> NO</button>
+                        <a id="si" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i> SI</a>
                     </div>
                 </div>
             </div>
-            <!-- Fin Modal -->  
-                  <!-- Inicio Modal Anular-->
-            <div class="modal fade" id="anular" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
-                            <h4 class="modal-title custom-align"> <strong>Atención!!!</strong></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert alert-danger" id="confirmacion">
+        </div>
 
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a id="si" role="buttom" class="btn btn-primary">
-                                <i class="fa fa-check"></i> Si
-                            </a>
-                            <button type="reset" data-dismiss="modal" class="btn btn-default" 
-                                    data-title="Cancelar" rel="tooltip">
-                                <i class="fa fa-close"></i> No
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Modal -->                  
-        </div>                  
-        <?php require 'menu/js_lte.ctp'; ?><!--ARCHIVOS JS-->
-        <script>
-        $("#mensaje").delay(4000).slideUp(200,function(){
-           $(this).alert('close'); 
+        <?php require 'menu/footer_lte.ctp'; ?>
+    </div>
+
+    <?php require 'menu/js_lte.ctp'; ?>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('#ventasTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
+            },
+            columnDefs: [{
+                    orderable: false,
+                    targets: [9],
+                    
+                }, // Columna de acciones no ordenable
+                {
+                    width: "7%",
+                    targets: [0, 1, 4, 5, 6, 8]
+                } // Ancho fijo para algunas columnas
+            ]
         });
-        </script>
-        <script>
-            function anular(datos){
-                var dat = datos.split("_");
-                $("#si").attr('href', 'ventas_control.php?vven_cod=' + dat[0] + '&accion=3');
-                $("#confirmacion").html("<span class='glyphicon glyphicon-warning-sign'>\n\
-                </span> Desea anular la Venta N° <strong>" 
-                + dat[0] + "</strong> del cliente <strong>" + dat[1] + "</strong>?");
-            };
-            function confirmar(datos){
-                var dat = datos.split("_");
-                $("#sic").attr('href', 'ventas_control.php?vven_cod=' + dat[0] + '&accion=2');
-                $("#confirmacionc").html("<span class='glyphicon glyphicon-question-sign'>\n\
-                </span> Desea confirmar la Venta N° <strong>" 
-                + dat[0] + "</strong> del cliente <strong>" + dat[1] + "</strong>?");                
-            }
-        </script>        
-    </body>
+
+        // Ocultar mensaje después de 4 segundos
+        $("#mensaje").delay(6000).slideUp(200, function() {
+            $(this).alert('close');
+        });
+    });
+
+    function anular(ventaId) {
+        $("#si").attr('href', 'venta_anular.php?id=' + ventaId);
+        $("#confirmacion").html(`
+                <span class='glyphicon glyphicon-warning-sign'></span> 
+                Desea anular la Venta N° <strong>${ventaId}</strong>?
+            `);
+        $('#anular').modal('show');
+    }
+    </script>
+</body>
+
 </html>
-
-

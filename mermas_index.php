@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Orden de Producción</title>
-    <link rel="stylesheetbb" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-       
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="/taller/favicon.ico">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+      
 
     <?php 
     session_start(); // Reanudar sesión
@@ -21,6 +23,7 @@
 }
 
     </style>
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -59,7 +62,7 @@
 
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                        <table id="mermas" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -75,50 +78,42 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php 
-                                    $mermas = consultas::get_datos("SELECT * FROM v_mermas");
+    <?php 
+    $mermas = consultas::get_datos("SELECT * FROM v_mermas");
 
-                                    if (!empty($mermas)) {
-                                        foreach ($mermas as $merma) { ?>
-                                            <tr>
-    <td><?php echo htmlspecialchars($merma['merma_id'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($merma['calidad_id'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($merma['fecha_merma'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($merma['cantidad'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($merma['descripcion'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($merma['motivo'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td class="text-center">
-    <a href="orden_compra_print.php?merma_id=<?php echo $merma['merma_id']; ?>" 
-                                                               class="btn btn-default btn-sm" data-title="Imprimir" rel="tooltip" target="_blank">
-                                                                <i class="glyphicon glyphicon-print"></i> Imprimir
-                                                            </a>
-                                                            <a href="orden_compra_detalles.php?merma_id=<?php echo $merma['merma_id']; ?>" 
-   class="btn btn-info btn-sm" 
-   data-title="Detalles" 
-   rel="tooltip">
-    <i class="fa fa-info-circle"></i> Detalles
-</a>
-       
+    if (!empty($mermas)) {
+        foreach ($mermas as $merma) { ?>
+            <tr>
+                <td><?= htmlspecialchars($merma['merma_id'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($merma['calidad_id'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($merma['fecha_merma'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($merma['cantidad'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($merma['descripcion'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($merma['motivo'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td class="text-center">
+                    <a href="mermas_print.php?merma_id=<?= $merma['merma_id']; ?>" 
+                        class="btn btn-default btn-sm" data-title="Imprimir" rel="tooltip" target="_blank">
+                        <i class="glyphicon glyphicon-print"></i> Imprimir
+                    </a>
+                    <a href="merma_detalles.php?merma_id=<?= $merma['merma_id']; ?>" 
+                        class="btn btn-info btn-sm" data-title="Detalles" rel="tooltip">
+                        <i class="fa fa-info-circle"></i> Detalles
+                    </a>
+                </td>
+            </tr>
+        <?php }
+    } else { ?>
+        <tr>
+            <td colspan="7" class="text-center">
+                <div class="alert alert-info">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                    No se encontraron registros de mermas...
+                </div>
+            </td>
+        </tr>
+    <?php } ?>
+</tbody>
 
-
-
-
-
-
-    </td>
-</tr>
-
-                                        <?php }
-                                    } else { ?>
-                                        <tr>
-                                            <td colspan="9" class="text-center">
-                                                <div class="alert alert-info">
-                                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                                    No se encontraron registros de mermas...
-                                                </div>
-                                          
-                                    <?php } ?>
-                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -127,8 +122,7 @@
             </div>
         </div>
         <?php require 'menu/footer_lte.ctp'; ?>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
-
+     
     </div>
 
     <!-- Modal de confirmación -->
@@ -165,50 +159,53 @@
                 </div>
             </div>
         </div>
+        
+       
+        
+       
     </div>
 
-    <!-- Archivos JS -->
     <?php require 'menu/js_lte.ctp'; ?>
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-qFOQ9YFAeGj1gDOuUD61g3D+tLDv3u1ECYWqT82WQoaWrOhAY+5mRMTTVsQdWutbA5FORCnkEPEgU0OF8IzGvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"></script>
-          <script src="https://cdn.datatables.net/1.13.7/css/dataTables.semanticui.min.css"></script>
-          
-           <script src="https://cdn.datatables.net/1.13.7/js/dataTables.uikit.min.js"></script>
-            <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
    
-  
-   <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script>
-        // Inicialización de DataTables
-        $(document).ready(function() {
-    $('#example').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
-} );
+    <!-- jQuery -->
+   
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<!-- DataTables Buttons (solo si usas 'copy', 'csv', 'excel', 'pdf', 'print') -->
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
-        // Lógica del modal
-        $('#confirmModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Botón que activó el modal
-            var preCod = button.data('pre_cod'); // Extrae información de atributos de datos
-            var modal = $(this);
-            modal.find('input[name="vpre_cod"]').val(preCod); // Actualiza el valor del input oculto
+<!-- Inicialización segura -->
+<script>
+    $(function () {
+        // Inicializa DataTables
+        $('#mermas').DataTable({
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+            }
         });
-    </script>
-    <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+
+        // Modal dinámico: asigna valor al input oculto
+        $('#confirmModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var preCod = button.data('pre_cod');
+            $(this).find('input[name="vpre_cod"]').val(preCod);
+        });
+
+        // Tooltips (versión para Bootstrap 3)
+        $('[rel="tooltip"]').tooltip();
+    });
 </script>
+
+
 </body>
 </html>

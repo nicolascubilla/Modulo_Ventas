@@ -135,7 +135,7 @@ if (!empty($cabeceras)) {
         } else {
             $pdf->SetFillColor(255, 255, 255);
             $pdf->SetFont('', 'B', 12);
-            $pdf->Cell(0, 5, "El pedido no posee detalles cargados...", 0, 0, 'L', 1);
+            $pdf->Cell(0, 5, "El presupuesto no posee detalles cargados...", 0, 0, 'L', 1);
             $pdf->Ln();
             $pdf->Cell(0, 0, "", 'B',0,'C',0);
             $pdf->Ln();

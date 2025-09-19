@@ -5,16 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Orden de Producción</title>
     <link rel="shortcut icon" href="/lp3/favicon.ico" type="image/x-icon">
-     <!-- CSS de DataTables -->
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
-
+   
     <?php 
     session_start(); // Reanudar sesión
     require 'menu/css_lte.ctp'; ?>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+     <!-- CSS de DataTables -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+     <style> .estado-finalizado {
+    background-color: #28a745; /* Verde */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.estado-pendiente {
+    background-color: #ffc107; /* Amarillo */
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.estado-anulado {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+</style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -60,7 +84,7 @@
                             $contolpro = consultas::get_datos("SELECT * FROM v_control_produccion_cabe");
                             if (!empty($contolpro)) :
                             ?>
-                              <table id="controlTable" class="table table-striped table-condensed table-hover table-responsive">
+                               <table id="controltable" class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>N° Orden</th>
@@ -69,7 +93,7 @@
                                         <th>Estado</th>
                                         <th>Progreso</th>
                                         <th>Tiempo Invertido</th>
-                                        <th>Comentarios</th>
+                               <!-- #region <th>Comentarios</th>-->
                                         <th>Sucursal</th>
                                         <th>Usuario</th>
                                         <th>Acciones</th>
@@ -81,16 +105,30 @@
                                             <td><?php echo $contol['control_id']; ?></td>
                                             <td><?php echo $contol['pedido_id']; ?></td>
                                             <td><?php echo $contol['fecha_avance']; ?></td>
-                                            <td><?php echo $contol['estado']; ?></td>
+                                            <td>   <span class="estado 
+                <?php 
+                    echo $contol['estado'] == 'FINALIZADO' ? 'estado-finalizado' : 
+                         ($contol['estado'] == 'PENDIENTE REVISIÓN' ? 'estado-pendiente' : 
+                         ($contol['estado'] == 'PENDIENTE' ? 'estado-pendiente' : 
+                         ($contol['estado'] == 'ANULADO' ? 'estado-anulado' : '')));
+                ?>">
+                <?php echo $contol['estado']; ?>
+            </span></td>
                                             <td><?php echo $contol['progreso']; ?></td>
                                             <td><?php echo $contol['tiempo_invertido']; ?></td>
-                                            <td><?php echo $contol['comentarios']; ?></td>
+                                            <!-- #region <td><?php echo $contol['comentarios']; ?></td>-->
                                             <td><?php echo $contol['suc_descri']; ?></td>
                                             <td><?php echo $contol['usu_nick']; ?></td>
                                             <td>
-    <a href="control_produccion_det.php?vord_cod=<?php echo $contol['control_id'];?>" class="btn btn-primary btn-md" data-title="Detalles" rel="tooltip">
+                                            <a href="control_produccion_print.php?vcontrol_id=<?php echo $contol['control_id']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                                            <span class="glyphicon glyphicon-print"></span></a>
+    <a href="control_produccion_det.php?vcontrol_id=<?php echo $contol['control_id'];?>" class="btn btn-primary btn-md" data-title="Detalles" rel="tooltip">
         <i class="fa fa-list"></i>                                                                    
     </a>     
+    <?php if ($contol['estado'] !== 'FINALIZADO' ) { ?>
+    <a href="control_produccion_editar.php?vcontrol_id=<?php echo $contol['control_id']; ?>" class="btn btn-warning btn-sm" data-title="Editar" rel="tooltip">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </a> <?php } ?>
 </td>
 
                                     </tr>
@@ -117,29 +155,26 @@
     <?php require 'menu/js_lte.ctp'; ?>
     
       <!-- DataTables JS -->
-      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+       <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#controlTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
-                },
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'excel', 'pdf', 'print'
-                ]
-           
-            }); 
+        $('#controltable').DataTable({  // ← Corrección del ID aquí
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json'
+            }
         });
-    </script>
 
-    <script>
+   
+
+ 
              // Ocultar mensaje después de 4 segundos
              $("#mensaje").delay(4000).slideUp(200, function () {
                 $(this).alert('close');
             });
-    
+        });
+
         
     </script>
 

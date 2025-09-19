@@ -21,7 +21,7 @@ $pdf->SetMargins(15, 15, 15);
 $pdf->SetAutoPageBreak(TRUE, 20);
 $pdf->SetFont('times', '', 11);
 $pdf->AddPage('P', 'LEGAL');
-$logo_path = 'C:/wamp/www/lp3/img/carpin_la_familyfull.jpg';
+$logo_path = 'C:/wamp64/www/lp3/img/carpin_la_familyfull.jpg';
 
 if (file_exists($logo_path)) {
     $pdf->Image($logo_path, 15, 13, 22, 0, '', '', 'T', false, 100, '', false, false, 0, false, false, false);

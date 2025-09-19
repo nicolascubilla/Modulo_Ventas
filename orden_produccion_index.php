@@ -66,7 +66,7 @@
                             <div class="box-header">
                                 <h3 class="box-title">
                                 <img src="img/produccion.png" alt="Ajustes" width="50" height="50">
-</svg> Orden Producción
+                                    </svg> Orden Producción
                                 </h3>
                                 <div class="box-tools">
                                     <a href="orden_produccion_add.php" class="btn btn-primary btn-sm pull-right" data-title="Agregar" rel="tooltip" data-placement="top">
@@ -129,13 +129,13 @@
             <td class="text-center">
                         <?php if ($ord['estado_nombre'] === "PENDIENTE") { ?>
                             <!-- Botones habilitados solo cuando el estado es "PENDIENTE" -->
-                            <a href="pedcompra_print?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                            <a href="orden_produccion_print.php?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
                                 <i class="fa fa-print"></i>
                             </a>
-                            <a href="pedcompra_edit.php?vid_pedido=<?php echo $ord['ord_cod']; ?>" class="btn btn-warning btn-sm" title="Editar">
-                                <i class="glyphicon glyphicon-edit"></i>
+                          <!--   <a href="pedcompra_edit.php?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-warning btn-sm" title="Editar">
+                                <i class="glyphicon glyphicon-edit"></i> --> 
                             </a>
-                            <a onclick="anular('<?php echo $ord['ord_cod'] . '_' . $ord['ord_cod']; ?>')" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#anular" title="Anular">
+                            <a onclick="anular('<?php echo $ord['pre_cod'] . '_' . $ord['pre_cod']; ?>')" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalAnular" title="Anular">
                                 <i class="fa fa-remove"></i>
                             </a>
                             <a href="orden_produccion_det.php?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-success btn-sm" title="Detalles">
@@ -146,7 +146,7 @@
 
                         <?php if ($ord['estado_nombre'] === "ANULADO") { ?>
                             <!-- Botón habilitado solo cuando el estado es "ANULADO" -->
-                            <a href="pedcompra_print?vid_pedido=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                            <a href="orden_produccion_print?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
                                 <i class="fa fa-print"></i>
                             </a>
                             <a href="orden_produccion_det.php?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-success btn-sm" title="Detalles">
@@ -155,7 +155,7 @@
                         <?php } ?>
                         <?php if ($ord['estado_nombre'] === "FINALIZADO") { ?>
                             <!-- Botón habilitado solo cuando el estado es "ANULADO" -->
-                            <a href="pedcompra_print?vid_pedido=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                            <a href="orden_produccion_print?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
                                 <i class="fa fa-print"></i>
                             </a>
                             <a href="orden_produccion_det.php?vord_cod=<?php echo $ord['ord_cod']; ?>" class="btn btn-success btn-sm" title="Detalles">
@@ -181,24 +181,30 @@
             </div>
         </div>
 
-        <!-- Modal para anular -->
-        <div class="modal fade" id="anular" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class="close" data-dismiss="modal" aria-label="Cerrar"><i class="fa fa-remove"></i></button>
-                        <h4 class="modal-title">Atención!</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div id="confirmacion" class="alert alert-danger"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-default" data-dismiss="modal"><i class="fa fa-remove"></i> NO</button>
-                        <a id="si" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i> SI</a>
-                    </div>
-                </div>
+       <!-- Modal de Confirmación -->
+<div id="modalAnular" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmación</h4>
+            </div>
+            <div class="modal-body">
+                <p id="confirmacion"></p>
+            </div>
+            <div class="modal-footer">
+                <form id="form_anular" method="POST">
+                    <!-- Campo oculto para enviar el código de la orden -->
+                    <input type="hidden" name="vpre_cod" id="vpre_cod">
+                    <input type="hidden" name="accion" value="2">
+                    
+                    <button type="submit" class="btn btn-danger">Sí, Anular</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </form>
             </div>
         </div>
+    </div>
+</div>
+
 
         <?php require 'menu/footer_lte.ctp'; ?>
     </div>
@@ -224,13 +230,22 @@
         });
 
         function anular(datos) {
-            var dat = datos.split("_");
-            $("#si").attr('href', 'pedcompra_control.php?vid_pedido=' + dat[0] + '&accion=2');
-            $("#confirmacion").html(`
-                <span class='glyphicon glyphicon-warning-sign'></span> 
-                Desea anular la orden de producción N° <strong>${dat[0]}</strong>?
-            `);
-        }
+    var dat = datos.split("_");
+
+    // Asigna el código de la orden al campo oculto
+    document.getElementById("vpre_cod").value = dat[0];
+
+    // Cambia el mensaje de confirmación
+    document.getElementById("confirmacion").innerHTML = `
+        <span class='glyphicon glyphicon-warning-sign'></span> 
+        Desea anular la orden de producción N° <strong>${dat[0]}</strong>?
+    `;
+
+    // Envía el formulario al controlador cuando se confirma la anulación
+    document.getElementById("form_anular").action = "orden_produccion_anular_control.php";
+}
+
+
     </script>
 </body>
 </html>

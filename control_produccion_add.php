@@ -66,7 +66,7 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-md-12">
+                                            <div class="col-lg-3 col-md-12">
                                                 <label for="fecha" class="control-label">Fecha Avance:</label>
                                                 <?php
                                                 date_default_timezone_set('America/Asuncion');
@@ -88,7 +88,7 @@
                                                 <label for="tiempo" class="control-label">Tiempo Invertido:</label>
                                                 <input type="number" id="tiempo" name="vtiempo_invertido" class="form-control" placeholder="Ingrese tiempo invertido en horas..." step="0.01" min="0" max="999.99">
                                             </div>
-                                            <div class="col-lg-4 col-md-12">
+                                            <div class="col-lg-3 col-md-12">
                                                 <label for="comentario" class="control-label">Comentario:</label>
                                                 <textarea id="comentario" name="vcomentario" class="form-control" placeholder="Ingrese un comentario adicional..."></textarea>
                                             </div>
@@ -110,7 +110,7 @@
 
                                         <!-- Detalle del Pedido -->
                                         <div class="row mt-4">
-                                            <div class="col-lg-12">
+                                            <div class="col-lg-11">
                                                 <h4>Detalle del Pedido:</h4>
                                                 <table class="table table-bordered">
                                                     <thead>
@@ -130,7 +130,7 @@
 
                                         <!-- Etapas de Producción -->
                                         <div class="row mt-4">
-                                            <div class="col-lg-12">
+                                            <div class="col-lg-11">
                                                 <h4>Etapas de Producción:</h4>
                                                 <table class="table table-bordered">
                                                     <thead>

@@ -71,22 +71,23 @@
                                         <td><?php echo htmlspecialchars($con['empleado']); ?></td>
                                     
                                         <td>
-                                        <?php if ($con['aprobado'] !== 'Si'): ?>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarcontrol" data-ord_cod="<?php echo htmlspecialchars($con['calidad_id']); ?>">
-                                                Registrar Control
-                                            </button>
-
-                                            <?php else: ?>
-                                                <button type="button" class="btn btn-primary" disabled>
-                                                    Registrar Control
-                                                </button>
-                                            <?php endif; ?>
-
-                                            <a href="control_calidad_detalle.php?calidad_id=<?php echo htmlspecialchars($con['calidad_id']); ?>" class="btn btn-primary">
-                                                Ver
-                                            </a>
-                                           
-                                        </td>
+                                            <a href="control_calidad_print.php?vcalidad_id=<?php echo $con['calidad_id']; ?>" class="btn btn-default btn-md" data-title="Imprimir" rel="tooltip" target="print">
+                                            <span class="glyphicon glyphicon-print"></span></a>
+    <a href="control_calidad_detalle.php?vcalidad_id=<?php echo $con['calidad_id'];?>" class="btn btn-primary btn-md" data-title="Detalles" rel="tooltip">
+        <i class="fa fa-list"></i>                                                                    
+    </a>     
+    <?php 
+    $estado = $con['estado'];
+    $aprobado = $con['aprobado'];
+    if (
+    ($estado === 'FINALIZADO' && $aprobado === 'RECHAZADO') || 
+    ($estado !== 'FINALIZADO' && $estado !== 'PENDIENTE REVISIÓN')
+) {
+?>
+    <a href="control_calidad_editar.php?vcalidad_id=<?php echo $con['calidad_id']; ?>" class="btn btn-warning btn-sm" data-title="Editar" rel="tooltip">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </a> <?php } ?>
+</td>
                                     </tr>
                                     <?php } 
 } else { ?>

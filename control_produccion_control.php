@@ -19,7 +19,7 @@ try {
     // Validar que los datos necesarios están presentes
     if (
         empty($accion) || empty($vpedido_id) || empty($vfecha_avance) ||
-        empty($vprogreso) || empty($vtiempo_invertido) || empty($vcomentario) ||
+        empty($vtiempo_invertido) || 
         empty($vid_sucursal) || empty($vusu_cod) || empty($vart_cod) ||
         empty($vcantidad) || empty($vestado_etapa)
     ) {

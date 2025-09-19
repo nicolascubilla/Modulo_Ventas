@@ -23,6 +23,9 @@ try {
     $vfecha_emision = $_POST['vfecha_emision'] ?? null;
     $vmonto_total = $_POST['vmonto_total'] ?? 'NULL';
     $vtimbrado = $_POST['vtimbrado'] ?? 'NULL';
+    if (!preg_match('/^\d{8}$/', $vtimbrado)) {
+    die('El N° de timbrado debe tener exactamente 8 dígitos');
+    }
     $vid_metodo_pago = $_POST['vid_metodo_pago'] ?? 'NULL';
     $vcondicion = $_POST['vcondicion'] ?? 'NULL';
     $vfact_cuota = $_POST['vfact_cuota'] ?? 'NULL';
@@ -31,6 +34,9 @@ try {
     $vusu_cod = $_POST['vusu_cod'] ?? 'NULL';
     $vplazo = $_POST['vplazo'] ?? 'NULL'; 
     $vid_factu_proveedor = $_POST['vid_factu_proveedor'] ?? 'NULL';
+    if (!preg_match('/^\d{1,13}$/', $vid_factu_proveedor)) {
+    die('El N° de factura del proveedor debe tener hasta 13 dígitos');
+    }
     $vdep_cod = $_POST['vdep_cod'] ?? 'NULL';
        // Si la condición es 'CONTADO', establecer vplazo como NULL
     if ($vcondicion == 'CONTADO') {

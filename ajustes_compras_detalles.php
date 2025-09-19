@@ -123,7 +123,7 @@
         <div class="box box-primary">
             <div class="box-header">
   
-                <h1 class="titulo">Ajuste de Compras</h1>
+                <h1 class="titulo">Ajuste de Inventario</h1>
                 <div class="box-tools">
                 <a href="ajuste_compra_index.php" class="btn" title="Volver">
                     <i class="fa fa-arrow-left"></i> Volver
@@ -145,14 +145,12 @@
                             <tr>
                                 <th style="width: 25%;">Ajuste N°</th>
                                 <td style="width: 25%;"><?= htmlspecialchars($cabecera['id_ajuste']) ?></td>
-                                <th style="width: 25%;">ID Factura</th>
-                                <td style="width: 25%;"><?= htmlspecialchars($cabecera['id_factura']) ?></td>
+        
                             </tr>
                             <tr>
                                 <th>Fecha de Ajuste</th>
                                 <td><?= htmlspecialchars($cabecera['fecha_ajuste']) ?></td>
-                                <th>Tipo de Ajuste</th>
-                                <td><?= htmlspecialchars($cabecera['concepto']) ?></td>
+                               
                             </tr>
                             <tr>
                                 <th>Descripción</th>

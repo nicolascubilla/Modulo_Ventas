@@ -41,7 +41,8 @@ if ($pedido_id) {
                         <td>' . htmlspecialchars($etapa['nombre_etapa']) . '</td>
                         <td>' . htmlspecialchars($etapa['descripcion'] ?? 'Sin descripción') . '</td>
                         <td>
-                            <input type="checkbox" name="vestado_etapa[' . htmlspecialchars($etapa['id_etapa']) . ']" value="8">
+                            <input type="hidden" name="vestado_etapa[' . htmlspecialchars($etapa['id_etapa']) . ']" value="1">
+                             <input type="checkbox" name="vestado_etapa[' . htmlspecialchars($etapa['id_etapa']) . ']" value="8">
                             Cumplido
                         </td>
                     </tr>';

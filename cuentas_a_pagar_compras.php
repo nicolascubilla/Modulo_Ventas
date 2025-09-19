@@ -148,6 +148,7 @@
                                                         <th class="text-center">ID Factura</th>
                                                         <th class="text-center">Nro Cuota</th>
                                                         <th class="text-center">Monto</th>
+                                                        <th class="text-center">Metodo Pago</th>
                                                         <th class="text-center">Fecha Vencimiento</th>
                                                         <th class="text-center">Saldo</th>
                                                         <th class="text-center">Estado</th>
@@ -160,6 +161,7 @@
                                                             <td class="text-center"><?php echo $cuenta['id_factura']; ?></td>
                                                             <td class="text-center"><?php echo $cuenta['nro_cuota']; ?></td>
                                                             <td class="text-center"><?php echo number_format($cuenta['monto_cuota']); ?></td>
+                                                            <td class="text-center"><?php echo $cuenta['metodo_pago']; ?></td>
                                                             <td class="text-center"><?php echo $cuenta['fecha_vencimiento']; ?></td>
                                                             <td class="text-center"><?php echo number_format($cuenta['saldo_cuota']); ?></td>
                                                             <td class="text-center">
@@ -221,6 +223,18 @@
                 <div id="confirmacion" class="alert alert-light">
                     ¿Estás seguro de que deseas pagar la factura N° <strong>12345</strong>?
                 </div>
+                <div class="form-group">
+        <label for="metodo_pago_modal">Seleccione Método de Pago:</label>
+        <select id="metodo_pago_modal" class="form-control">
+            <?php 
+            $metodos = consultas::get_datos("SELECT * FROM metodo_pago WHERE activo = true");
+            foreach($metodos as $m) {
+                echo "<option value='{$m['id']}'>{$m['nombre']}</option>";
+            }
+            ?>
+        </select>
+    </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" data-dismiss="modal">
@@ -249,8 +263,16 @@
 
             function pagar(id_factura, nro_cuota, fecha_vencimiento) {
     // Configurar el enlace con el id_factura para el controlador
-    $('#si').attr('href', 'factura_compra_cuentas_control.php?vid_factura=' + id_factura + '&accion=2&vnro_cuota=' + nro_cuota);
-
+    $('#si').off('click').on('click', function() {
+        let metodoPago = $('#metodo_pago_modal').val();
+        if(metodoPago) {
+            window.location.href = 'factura_compra_cuentas_control.php?vid_factura=' + id_factura +
+                                   '&accion=2&vnro_cuota=' + nro_cuota +
+                                   '&id_metodo_pago=' + metodoPago;
+        } else {
+            alert('Seleccione un método de pago.');
+        }
+    });
 
     // Mostrar el mensaje estilizado con el número de cuota, fecha de vencimiento y factura
     $('#confirmacion').html(

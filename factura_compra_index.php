@@ -134,7 +134,7 @@
                                                         <td><?php echo $factura['sucursal_descripcion']; ?></td>
                                                         <td><?php echo $factura['usuario_nick']; ?></td>
                                                         <td class="text-center">
-                                                            <a href="factura_compra_print.php?id_factura=<?php echo $factura['id_factura']; ?>" 
+                                                            <a href="factura_compra_print.php?vid_factura=<?php echo $factura['id_factura']; ?>" 
                                                                class="btn btn-default btn-sm" data-title="Imprimir" rel="tooltip" target="_blank">
                                                                 <i class="glyphicon glyphicon-print"></i> Imprimir
                                                             </a>

@@ -75,7 +75,7 @@ session_start(); // Asegúrate de que esto esté al principio del archivo
             <label>
                 <input type="checkbox" name="recuerdame"/> No cerrar sesión
             </label>
-            <p class="help-block"><a href="#">¿No puede acceder a su cuenta?</a></p>
+            <p class="help-block"><a href="recuperar_contrasena.php">¿No puede acceder a su cuenta?</a></p>
         </div>
     </div>
 
