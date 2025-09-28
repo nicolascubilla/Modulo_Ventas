@@ -182,7 +182,7 @@ if (!empty($proveedor)) {
     <?php endif; ?>
 
     <script>
-        // Imprimir automáticamente
+        // Imprimir automáticamente--
         window.onload = function() {
             window.print();
         };
